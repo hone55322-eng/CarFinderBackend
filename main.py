@@ -15,8 +15,6 @@ api_key_2 = os.getenv("GEMINI_API_KEY_2")
 
 api_keys = [key for key in [api_key_1, api_key_2] if key]
 
-client = genai.Client(api_key=api_key)
-
 app = FastAPI()
 
 
@@ -99,8 +97,3 @@ Rules:
                 "error": str(e)
             }
         )
-
-
-git add main.py
-git commit -m "Add API key fallback"
-git push
