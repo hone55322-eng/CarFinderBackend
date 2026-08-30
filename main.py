@@ -10,7 +10,10 @@ import json
 
 load_dotenv()
 
-api_key = os.getenv("GEMINI_API_KEY")
+api_key_1 = os.getenv("GEMINI_API_KEY")
+api_key_2 = os.getenv("GEMINI_API_KEY_2")
+
+api_keys = [key for key in [api_key_1, api_key_2] if key]
 
 client = genai.Client(api_key=api_key)
 
@@ -53,13 +56,32 @@ Rules:
 - JSON only
 """
 
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=[
-                prompt,
-                image
-            ]
-        )
+        response = None
+        last_error = None
+
+        for index, key in enumerate(api_keys, start=1):
+            try:
+                client = genai.Client(api_key=key)
+
+                response = client.models.generate_content(
+                    model="gemini-3.6-flash",
+                    contents=[
+                        prompt,
+                        image
+                    ]
+                )
+
+                print(f"[CarFinder] Request succeeded using API key #{index}")
+
+                break
+
+            except Exception as e:
+                print(f"[CarFinder] API key #{index} failed: {e}")
+                last_error = e
+                continue
+
+        if response is None:
+            raise last_error
 
         text = response.text.strip()
 
@@ -77,3 +99,8 @@ Rules:
                 "error": str(e)
             }
         )
+
+
+git add main.py
+git commit -m "Add API key fallback"
+git push
