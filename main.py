@@ -16,8 +16,6 @@ api_key_3 = os.getenv("GEMINI_API_KEY_3")
 
 api_keys = [key for key in [api_key_1, api_key_2, api_key_3] if key]
 
-client = genai.Client(api_key=api_key)
-
 app = FastAPI()
 
 
